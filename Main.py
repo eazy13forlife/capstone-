@@ -20,7 +20,6 @@ y=nba_awards_data['All-Star']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                     stratify=y, random_state=42)
 
-
 rf=RandomForestClassifier(
     n_estimators=200,
     max_depth=10,
@@ -30,21 +29,9 @@ rf=RandomForestClassifier(
 
 rf.fit(X_train, y_train)
 
-new_player_stats={
-    'FG_PCT':[],
-    'FG3_PCT':[],
-    'PPG':[],
-    'RPG':[],
-    'APG':[],
-    'SPG':[],
-    'BPG':[],
-    'TPG':[],
-    'WIN_PCT':[],
-    'GP_PCT':[]
-}
 
 
-def get_numerical_value(string, decimal):
+def get_numerical_value(string, max_value):
     print(string)
 
     value = None
@@ -58,15 +45,15 @@ def get_numerical_value(string, decimal):
             if float_val<0:
                 raise ValueError("Value cannot be negative")
 
-            if decimal == True and (float_val < 0 or float_val > 1):
-                raise ValueError("Value must be between 0 and 1")
+            if float_val < 0 or float_val > max_value:
+                raise ValueError("Value must be between 0 and max_value")
 
             break;
         except ValueError as e:
             if e.args[0]=="Value cannot be negative":
                 print("Value cannot be negative. Please try again.")
-            elif e.args[0]=="Value must be between 0 and 1":
-                print("Please enter a valid number between 0 and 1")
+            elif e.args[0]=="Value must be between 0 and max_value":
+                print("Please enter a valid number between 0 and "+ str(max_value))
             else:
                 print("Please enter a valid number")
 
@@ -84,30 +71,30 @@ class Main:
         player_name=input()
 
         player_fg_pct=get_numerical_value("What is this player's field goal percentage in "
-                                          "decimal form?",True)
+                                          "decimal form?",1)
 
         player_fg3_pct = get_numerical_value("What is this player's three-point field goal "
                                              "percentage "
                                              "in "
-                                            "decimal form?", True)
+                                            "decimal form?", 1)
 
-        player_ppg = get_numerical_value("What is this player's points per game", False)
+        player_ppg = get_numerical_value("What is this player's points per game", 36)
 
-        player_rpg = get_numerical_value("What is this player's rebounds per game", False)
+        player_rpg = get_numerical_value("What is this player's rebounds per game", 16)
 
-        player_apg = get_numerical_value("What is this player's assists per game", False)
+        player_apg = get_numerical_value("What is this player's assists per game", 12)
 
-        player_spg = get_numerical_value("What is this player's steals per game", False)
+        player_spg = get_numerical_value("What is this player's steals per game", 3)
 
-        player_bpg = get_numerical_value("What is this player's blocks per game", False)
+        player_bpg = get_numerical_value("What is this player's blocks per game", 4)
 
-        player_tpg = get_numerical_value("What is this player's turnovers per game", False)
+        player_tpg = get_numerical_value("What is this player's turnovers per game", 6)
 
         player_win_pct = get_numerical_value("What is this player's win percentage in "
-                                            "decimal form?", True)
+                                            "decimal form?", 1)
 
         player_gp_pct = get_numerical_value("What is this player's games played percentage in "
-                                            "decimal form?", True)
+                                            "decimal form?", 1)
 
         new_player_stats = pd.DataFrame({
             'FG_PCT': [player_fg_pct],
@@ -124,6 +111,7 @@ class Main:
 
         prediction=rf.predict(new_player_stats);
 
+        print(rf.predict_proba(new_player_stats))
         if prediction[0]==0:
             print(player_name+ " will not make the all-star game")
         else:
