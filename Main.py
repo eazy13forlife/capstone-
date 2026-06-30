@@ -1,5 +1,6 @@
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 
 nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
 
@@ -9,10 +10,119 @@ X=nba_awards_data.drop(columns=['SEASON','MATCH_TYPE','PLAYER_NAME', 'PLAYER_ID'
                                 'FGM_2','FG3M_2','FTM_2','DD','TD','FP','PIE',
                                 'FT_PCT','MVP','ROY','DPOY','MIP','6MOY',
                                 'All-NBA-Team','All-Defensive-Team','All-Rookie-Team',
-                                'All-Stat_MVP','Finals-MVP','POTW','POTM','ROTM',
-                                'ROOKIE_SEASON','FG3APG','FG3MPG','FTMPG','FTAPG'
+                                'All-Star-MVP','Finals-MVP','POTW','POTM','ROTM',
+                                'ROOKIE_SEASON','FG3APG','FG3MPG','FTMPG','FTAPG',
+                                'All-Star'
                                 ])
 
 y=nba_awards_data['All-Star']
 
-print(y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+                                                    stratify=y, random_state=42)
+
+
+rf=RandomForestClassifier(
+    n_estimators=200,
+    max_depth=10,
+    random_state=42,
+    class_weight='balanced'
+)
+
+rf.fit(X_train, y_train)
+
+new_player_stats={
+    'FG_PCT':[],
+    'FG3_PCT':[],
+    'PPG':[],
+    'RPG':[],
+    'APG':[],
+    'SPG':[],
+    'BPG':[],
+    'TPG':[],
+    'WIN_PCT':[],
+    'GP_PCT':[]
+}
+
+
+def get_numerical_value(string, decimal):
+    print(string)
+
+    value = None
+
+    while True:
+        try:
+            value = float(input())
+
+            float_val = float(value)
+
+            if float_val<0:
+                raise ValueError("Value cannot be negative")
+
+            if decimal == True and (float_val < 0 or float_val > 1):
+                raise ValueError("Value must be between 0 and 1")
+
+            break;
+        except ValueError as e:
+            if e.args[0]=="Value cannot be negative":
+                print("Value cannot be negative. Please try again.")
+            elif e.args[0]=="Value must be between 0 and 1":
+                print("Please enter a valid number between 0 and 1")
+            else:
+                print("Please enter a valid number")
+
+    return value;
+
+
+class Main:
+
+    run=True
+
+    while run:
+        print("What is the name of the NBA player you wish to decide if they should"
+          "be an all star?")
+
+        player_name=input()
+
+        player_fg_pct=get_numerical_value("What is this player's field goal percentage in "
+                                          "decimal form?",True)
+
+        player_fg3_pct = get_numerical_value("What is this player's three-point field goal "
+                                             "percentage "
+                                             "in "
+                                            "decimal form?", True)
+
+        player_ppg = get_numerical_value("What is this player's points per game", False)
+
+        player_rpg = get_numerical_value("What is this player's rebounds per game", False)
+
+        player_apg = get_numerical_value("What is this player's assists per game", False)
+
+        player_spg = get_numerical_value("What is this player's steals per game", False)
+
+        player_bpg = get_numerical_value("What is this player's blocks per game", False)
+
+        player_tpg = get_numerical_value("What is this player's turnovers per game", False)
+
+        player_win_pct = get_numerical_value("What is this player's win percentage in "
+                                            "decimal form?", True)
+
+        player_gp_pct = get_numerical_value("What is this player's games played percentage in "
+                                            "decimal form?", True)
+
+        new_player_stats = pd.DataFrame({
+            'FG_PCT': [player_fg_pct],
+            'FG3_PCT': [player_fg3_pct],
+            'PPG': [player_ppg],
+            'RPG': [player_rpg],
+            'APG': [player_apg],
+            'SPG': [player_spg],
+            'BPG': [player_bpg],
+            'TPG': [player_tpg],
+            'WIN_PCT': [player_win_pct],
+            'GP_PCT': [player_gp_pct]
+        })
+
+        prediction=rf.predict(new_player_stats);
+
+        print(prediction[0])
+
