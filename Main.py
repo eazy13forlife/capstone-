@@ -29,7 +29,15 @@ rf=RandomForestClassifier(
 
 rf.fit(X_train, y_train)
 
+importance = pd.DataFrame({
+    'Feature': X.columns,
+    'Importance': rf.feature_importances_
+})
 
+print(importance.sort_values(
+    by='Importance',
+    ascending=False
+))
 
 def get_numerical_value(string, max_value):
     print(string)
@@ -59,9 +67,11 @@ def get_numerical_value(string, max_value):
 
     return value;
 
+def convert_to_percent(decimal):
+    return round((decimal * 100),2)
+
 
 class Main:
-
     run=True
 
     while run:
@@ -109,13 +119,48 @@ class Main:
             'GP_PCT': [player_gp_pct]
         })
 
-        prediction=rf.predict(new_player_stats);
+        prediction=rf.predict(new_player_stats)
 
-        print(rf.predict_proba(new_player_stats))
+        prob=rf.predict_proba(new_player_stats)
+
         if prediction[0]==0:
-            print(player_name+ " will not make the all-star game")
+            message=(f"{player_name} will probably not make the all-star game. There is a "
+                     f"{convert_to_percent(prob[0][0])}% "
+                     f"chance they will not make the all-star game and a "
+                     f"{convert_to_percent(prob[0][1])}% chance "
+                     f"they "
+                     f"will make the all-star game.")
+            print(message)
         else:
-            print(player_name+ " will make the all-star game")
+            message = (f"{player_name} should make the all-star game. There is a "
+                       f"{convert_to_percent(prob[0][1])}% "
+                       f"chance they will make the all-star game and a "
+                       f"{convert_to_percent(prob[0][0])}% "
+                       f"chance "
+                       f"they "
+                       f"will not make the all-star game.")
+            print(message)
+
+        print("Do you want to continue with another player? Type y to continue"
+                  " or n to stop.")
+
+        while True:
+            try:
+                value=input()
+
+                if not (value== 'y' or value== 'n'):
+                    raise ValueError("Value must be 'y' or 'n'")
+
+                if value=='n':
+                    run = False
+                    print("Goodbye")
+                else:
+                    run = True
+
+                break
+            except ValueError:
+                print("Please type y or n")
+
 
 
 
