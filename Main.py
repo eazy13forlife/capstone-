@@ -29,16 +29,6 @@ rf=RandomForestClassifier(
 
 rf.fit(X_train, y_train)
 
-importance = pd.DataFrame({
-    'Feature': X.columns,
-    'Importance': rf.feature_importances_
-})
-
-print(importance.sort_values(
-    by='Importance',
-    ascending=False
-))
-
 def get_numerical_value(string, max_value):
     print(string)
 
@@ -146,7 +136,7 @@ class Main:
 
         while True:
             try:
-                value=input()
+                value=input().lower()
 
                 if not (value== 'y' or value== 'n'):
                     raise ValueError("Value must be 'y' or 'n'")
