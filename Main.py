@@ -79,7 +79,7 @@ class Main:
 
     while run:
         print("What is the name of the NBA player you wish to decide if they should"
-          "be an all star?")
+          " be an all star?")
 
         player_name=input()
 
@@ -124,5 +124,11 @@ class Main:
 
         prediction=rf.predict(new_player_stats);
 
-        print(prediction[0])
+        if prediction[0]==0:
+            print(player_name+ " will not make the all-star game")
+        else:
+            print(player_name+ " will make the all-star game")
+
+
+
 
