@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import IsolationForest
 
 nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
 
@@ -33,8 +34,16 @@ rf=RandomForestClassifier(
 
 rf.fit(X_train, y_train)
 
+# for detecting unusual combinations
+outlier_model = IsolationForest(
+    contamination=0.01,
+    random_state=42
+)
+
+outlier_model.fit(X_train)
+
 def get_numerical_value(string, max_value):
-    print(string)
+    print(string +" Value has to be between 0 and "+str(max_value)+".")
 
     value = None
 
@@ -77,7 +86,7 @@ class Main:
         player_fg_pct=get_numerical_value("What is this player's field goal percentage in "
                                           "decimal form?",1)
 
-        player_ppg = get_numerical_value("What is this player's points per game", 36)
+        player_ppg = get_numerical_value("What is this player's points per game?", 36)
 
         player_fg3_mpg = get_numerical_value("What is this player's three-pointers made per "
                                              "game?", 6)
@@ -85,15 +94,15 @@ class Main:
         player_ft_mpg = get_numerical_value("What is this player's free-throws made per "
                                              "game?", 11)
 
-        player_rpg = get_numerical_value("What is this player's rebounds per game", 16)
+        player_rpg = get_numerical_value("What is this player's rebounds per game?", 16)
 
-        player_apg = get_numerical_value("What is this player's assists per game", 12)
+        player_apg = get_numerical_value("What is this player's assists per game?", 12)
 
-        player_spg = get_numerical_value("What is this player's steals per game", 3)
+        player_spg = get_numerical_value("What is this player's steals per game?", 3)
 
-        player_bpg = get_numerical_value("What is this player's blocks per game", 4)
+        player_bpg = get_numerical_value("What is this player's blocks per game?", 4)
 
-        player_tpg = get_numerical_value("What is this player's turnovers per game", 6)
+        player_tpg = get_numerical_value("What is this player's turnovers per game?", 6)
 
         player_win_pct = get_numerical_value("What is this player's win percentage in "
                                             "decimal form?", 1)
@@ -119,23 +128,28 @@ class Main:
 
         prob=rf.predict_proba(new_player_stats)
 
+        is_outlier = outlier_model.predict(new_player_stats)[0]
+
+        not_all_star_percent = convert_to_percent(prob[0][0])
+
+        all_star_percent = convert_to_percent(prob[0][1])
+
         if prediction[0]==0:
-            message=(f"{player_name} will probably not make the all-star game. There is a "
-                     f"{convert_to_percent(prob[0][0])}% "
-                     f"chance they will not make the all-star game and a "
-                     f"{convert_to_percent(prob[0][1])}% chance "
-                     f"they "
-                     f"will make the all-star game.")
+            message = (f"{player_name} will probably not make the all-star game. There is a "
+                       f"{not_all_star_percent}% chance {player_name}will not make the "
+                       f"all-star game and a {all_star_percent}% chance {player_name} will "
+                       f"make the all-star game.")
+
             print(message)
         else:
-            message = (f"{player_name} should make the all-star game. There is a "
-                       f"{convert_to_percent(prob[0][1])}% "
-                       f"chance they will make the all-star game and a "
-                       f"{convert_to_percent(prob[0][0])}% "
-                       f"chance "
-                       f"they "
-                       f"will not make the all-star game.")
+            message = (f"{player_name} should make the all-star game. There is a"
+                       f" {all_star_percent}% chance {player_name} will make the all-star "
+                       f"game and a {not_all_star_percent}% chance {player_name} will not "
+                       f"make the all-star game.")
+
             print(message)
+
+        print("\n")
 
         print("Do you want to continue with another player? Type y to continue"
                   " or n to stop.")
