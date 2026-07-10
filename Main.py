@@ -124,7 +124,7 @@ class Main:
         })
 
         player_stats_table_string=f"""
-            'FG_PCT': {player_fg_pct},
+            'FG_PCT': {player_fg_pct*100},
             'PPG': {player_ppg},
             'RPG': {player_rpg},
             'APG': {player_apg},
@@ -133,8 +133,8 @@ class Main:
             'TPG': {player_tpg},
             'FG3MPG': {player_fg3_mpg},
             'FTMPG': {player_ft_mpg},
-            'WIN_PCT': {player_win_pct},
-            'GP_PCT': {player_gp_pct}"""
+            'WIN_PCT': {player_win_pct*100},
+            'GP_PCT': {player_gp_pct*100}"""
 
         prediction=rf.predict(new_player_stats)
 
@@ -185,8 +185,3 @@ class Main:
                 break
             except ValueError:
                 print("Please type y or n")
-
-
-
-
-
