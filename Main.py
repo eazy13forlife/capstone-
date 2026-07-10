@@ -9,17 +9,6 @@ features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT
 
 X=nba_awards_data[features]
 
-# X=nba_awards_data.drop(columns=['PTS','REB','SEASON','MATCH_TYPE','PLAYER_NAME',
-#                                 'PLAYER_ID','STL','BLK','TO',
-#                                 'GP','W','L','MIN','PTS', 'REB','AST', 'STL',
-#                                 'BLK','TO','FGM','FGA','FG3M','FG3A','FTM','FTA',
-#                                 'FGM_2','FG3M_2','FTM_2','DD','TD','FP','PIE','FG3_PCT',
-#                                 'FT_PCT','MVP','ROY','DPOY','MIP','6MOY',
-#                                 'All-NBA-Team','All-Defensive-Team','All-Rookie-Team',
-#                                 'All-Star-MVP','Finals-MVP','POTW','POTM','ROTM',
-#                                 'ROOKIE_SEASON','FG3APG','FTAPG','All-Star'
-#                                 ])
-
 y=nba_awards_data['All-Star']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
