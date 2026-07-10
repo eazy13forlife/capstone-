@@ -4,18 +4,25 @@ from sklearn.model_selection import train_test_split
 
 nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
 
-X=nba_awards_data.drop(columns=['SEASON','MATCH_TYPE','PLAYER_NAME', 'PLAYER_ID',
-                                'GP','W','L','MIN','PTS', 'REB','AST', 'STL',
-                                'BLK','TO','FGM','FGA','FG3M','FG3A','FTM','FTA',
-                                'FGM_2','FG3M_2','FTM_2','DD','TD','FP','PIE',
-                                'FT_PCT','MVP','ROY','DPOY','MIP','6MOY',
-                                'All-NBA-Team','All-Defensive-Team','All-Rookie-Team',
-                                'All-Star-MVP','Finals-MVP','POTW','POTM','ROTM',
-                                'ROOKIE_SEASON','FG3APG','FG3MPG','FTMPG','FTAPG',
-                                'All-Star'
-                                ])
+features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT','GP_PCT']
+
+X=nba_awards_data[features]
+
+# X=nba_awards_data.drop(columns=['PTS','REB','SEASON','MATCH_TYPE','PLAYER_NAME',
+#                                 'PLAYER_ID','STL','BLK','TO',
+#                                 'GP','W','L','MIN','PTS', 'REB','AST', 'STL',
+#                                 'BLK','TO','FGM','FGA','FG3M','FG3A','FTM','FTA',
+#                                 'FGM_2','FG3M_2','FTM_2','DD','TD','FP','PIE','FG3_PCT',
+#                                 'FT_PCT','MVP','ROY','DPOY','MIP','6MOY',
+#                                 'All-NBA-Team','All-Defensive-Team','All-Rookie-Team',
+#                                 'All-Star-MVP','Finals-MVP','POTW','POTM','ROTM',
+#                                 'ROOKIE_SEASON','FG3APG','FTAPG','All-Star'
+#                                 ])
 
 y=nba_awards_data['All-Star']
+
+column_order = X.columns.tolist()
+print(column_order)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                     stratify=y, random_state=42)
@@ -73,12 +80,13 @@ class Main:
         player_fg_pct=get_numerical_value("What is this player's field goal percentage in "
                                           "decimal form?",1)
 
-        player_fg3_pct = get_numerical_value("What is this player's three-point field goal "
-                                             "percentage "
-                                             "in "
-                                            "decimal form?", 1)
-
         player_ppg = get_numerical_value("What is this player's points per game", 36)
+
+        player_fg3_mpg = get_numerical_value("What is this player's three-pointers made per "
+                                             "game?", 6)
+
+        player_ft_mpg = get_numerical_value("What is this player's free-throws made per "
+                                             "game?", 11)
 
         player_rpg = get_numerical_value("What is this player's rebounds per game", 16)
 
@@ -98,13 +106,14 @@ class Main:
 
         new_player_stats = pd.DataFrame({
             'FG_PCT': [player_fg_pct],
-            'FG3_PCT': [player_fg3_pct],
             'PPG': [player_ppg],
             'RPG': [player_rpg],
             'APG': [player_apg],
             'SPG': [player_spg],
             'BPG': [player_bpg],
             'TPG': [player_tpg],
+            'FG3MPG': [player_fg3_mpg],
+            'FTMPG': [player_ft_mpg],
             'WIN_PCT': [player_win_pct],
             'GP_PCT': [player_gp_pct]
         })
