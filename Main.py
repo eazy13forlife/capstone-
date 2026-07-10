@@ -55,7 +55,7 @@ def get_numerical_value(string, max_value):
             elif e.args[0]=="Value must be between 0 and max_value":
                 print("Please enter a valid number between 0 and "+ str(max_value))
             else:
-                print("Please enter a valid number")
+                print("Please enter a valid number.")
 
     return value;
 
@@ -78,9 +78,9 @@ class Main:
 
     while run:
         print("What is the name of the NBA player you wish to decide if they should"
-          " be an all star?")
+          " be an all-star?")
 
-        player_name=get_input("Please enter a valid name")
+        player_name=get_input("Please enter a valid name.")
 
         player_fg_pct=get_numerical_value("What is this player's field goal percentage in "
                                           "decimal form?",1)
@@ -149,16 +149,16 @@ class Main:
         message=""
 
         if prediction[0]==0:
-            message = (f"With these numbers, {player_name} will probably not make the "
-                       f"all-star game. There is a {not_all_star_percent}% chance "
-                       f"{player_name} will not make the all-star game and a {all_star_percent}% "
-                       f"chance {player_name} will make the all-star game.")
+            message = (f"With these numbers, {player_name} will probably not be an "
+                       f"all-star. There is a {not_all_star_percent}% chance "
+                       f"{player_name} will not be an all-star and a {all_star_percent}% "
+                       f"chance {player_name} will be an all-star.")
 
         else:
-            message = (f"With these numbers, {player_name} should make the all-star game. "
-                       f"There is a {all_star_percent}% chance {player_name} will make the "
-                       f"all-star game and a {not_all_star_percent}% chance {player_name} will "
-                       f"not make the all-star game.")
+            message = (f"With these numbers, {player_name} should be an all-star. "
+                       f"There is a {all_star_percent}% chance {player_name} will be an "
+                       f"all-star and a {not_all_star_percent}% chance {player_name} will "
+                       f"not be an all-star.")
 
         print(message+"\n"+player_stats_table_string)
 
