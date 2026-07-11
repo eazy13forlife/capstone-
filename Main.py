@@ -79,9 +79,17 @@ class Main:
 
     while run:
         print("What is the name of the NBA player you wish to decide if they should"
-          " be an all-star?")
+          " be an All-Star for the year?")
 
         player_name=get_input("Please enter a valid name.")
+
+        print("I will be asking, in order, 1.) overall field goal percentage, "
+              "2.) points per game, 3.) rebounds per game, 4.) assists per game, 5.) steals "
+              "per game, 6.) blocks per game, 7.) turnovers per game, 8.) three-point field goals per game, "
+              "9.) free-throws made per game, 10.) overall win percentage, 11.) games played percentage "
+              "and 12.) minutes per game.")
+
+        print("\n")
 
         player_fg_pct=get_numerical_value("What is this player's field goal percentage in "
                                           "decimal form?",1)
@@ -155,15 +163,15 @@ class Main:
 
         if prediction[0]==0:
             message = (f"With these numbers, {player_name} will probably not be an "
-                       f"all-star. There is a {not_all_star_percent}% chance "
-                       f"{player_name} will not be an all-star and a {all_star_percent}% "
-                       f"chance {player_name} will be an all-star.")
+                       f"All-Star. There is a {not_all_star_percent}% chance "
+                       f"{player_name} will not be an All-Star and a {all_star_percent}% "
+                       f"chance {player_name} will be an All-Star.")
 
         else:
-            message = (f"With these numbers, {player_name} should be an all-star. "
+            message = (f"With these numbers, {player_name} should be an All-Star. "
                        f"There is a {all_star_percent}% chance {player_name} will be an "
-                       f"all-star and a {not_all_star_percent}% chance {player_name} will "
-                       f"not be an all-star.")
+                       f"All-Star and a {not_all_star_percent}% chance {player_name} will "
+                       f"not be an All-Star.")
 
         print(message+"\n"+player_stats_table_string)
 
