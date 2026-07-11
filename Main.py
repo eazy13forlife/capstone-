@@ -162,16 +162,16 @@ class Main:
         message=""
 
         if prediction[0]==0:
-            message = (f"With these numbers, {player_name} will probably not be an "
-                       f"All-Star. There is a {not_all_star_percent}% chance "
-                       f"{player_name} will not be an All-Star and a {all_star_percent}% "
-                       f"chance {player_name} will be an All-Star.")
+            message = (f"With these numbers for the season, the model estimates a"
+                       f" {not_all_star_percent}% probability that {player_name} does not belong"
+                       f" in the All-Star category and a {all_star_percent}% probability that "
+                       f"{player_name} belongs in the All-Star category.")
 
         else:
-            message = (f"With these numbers, {player_name} should be an All-Star. "
-                       f"There is a {all_star_percent}% chance {player_name} will be an "
-                       f"All-Star and a {not_all_star_percent}% chance {player_name} will "
-                       f"not be an All-Star.")
+            message = (f"With these numbers for the season, the model estimates a"
+                       f" {all_star_percent}% probability that {player_name} belongs in the All-Star "
+                       f"category and a {not_all_star_percent}% probability that {player_name} "
+                       f"does not belong in the All-Star category.")
 
         print(message+"\n"+player_stats_table_string)
 
