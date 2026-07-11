@@ -79,7 +79,7 @@ class Main:
 
     while run:
         print("What is the name of the NBA player you wish to decide if they should"
-          " be an All-Star for the year?")
+          " be named an All-Star for the year?")
 
         player_name=get_input("Please enter a valid name.")
 
