@@ -83,8 +83,8 @@ class Main:
 
         player_name=get_input("Please enter a valid name.")
 
-        print("I will be asking, in order, 1.) overall field goal percentage, "
-              "2.) points per game, 3.) rebounds per game, 4.) assists per game, 5.) steals "
+        print("For this player, I will be asking, in order, their 1.) overall field goal "
+              "percentage, 2.) points per game, 3.) rebounds per game, 4.) assists per game, 5.) steals "
               "per game, 6.) blocks per game, 7.) turnovers per game, 8.) three-point field goals per game, "
               "9.) free-throws made per game, 10.) overall win percentage, 11.) games played percentage "
               "and 12.) minutes per game.")
