@@ -205,97 +205,14 @@
 
 #########################################################################
 
-# import pandas as pd
-# import matplotlib.pyplot as plt
-# from sklearn.model_selection import train_test_split
-# from sklearn.ensemble import RandomForestClassifier
-#
-# nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
-#
-# features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT','GP_PCT']
-#
-# X=nba_awards_data[features]
-#
-# y=nba_awards_data['All-Star']
-#
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
-#                                                     stratify=y, random_state=42)
-#
-# rf=RandomForestClassifier(
-#     n_estimators=200,
-#     max_depth=10,
-#     random_state=42,
-#     class_weight='balanced'
-# )
-#
-# rf.fit(X_train, y_train)
-#
-# # Create feature importance DataFrame
-# feature_importance = pd.DataFrame({
-#     'Feature': features,
-#     'Importance': rf.feature_importances_
-# })
-#
-#
-# # Sort features from highest to lowest importance
-# feature_importance = feature_importance.sort_values(
-#     by='Importance',
-#     ascending=True
-# )
-#
-#
-# # Create bar chart
-# plt.figure(figsize=(10, 6))
-#
-# plt.barh(
-#     feature_importance['Feature'],
-#     feature_importance['Importance']
-# )
-#
-#
-# # Add importance values to each bar
-# for index, value in enumerate(feature_importance['Importance']):
-#     plt.text(
-#         value,
-#         index,
-#         f'{value:.3f}',
-#         va='center'
-#     )
-#
-#
-# # Chart title
-# plt.title(
-#     'Random Forest Feature Importance for All-Star Prediction',
-#     fontsize=16
-# )
-#
-#
-# # Axis labels
-# plt.xlabel('Feature Importance')
-#
-# plt.ylabel('Player Statistic')
-#
-#
-# # Adjust layout
-# plt.tight_layout()
-#
-#
-# # Display chart
-# plt.show()
-
-#########################################################################
-
-
-
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.tree import plot_tree
 from sklearn.ensemble import RandomForestClassifier
 
 nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
 
-features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT','GP_PCT']
+features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT','GP_PCT','MINPG']
 
 X=nba_awards_data[features]
 
@@ -304,27 +221,111 @@ y=nba_awards_data['All-Star']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                     stratify=y, random_state=42)
 
-rf_model = RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42)
-rf_model.fit(X_train, y_train)
-
-# 2. Set up a large plot canvas so the text doesn't overlap
-plt.figure(figsize=(20, 10))
-
-# 3. Pull ONE tree out of the forest and plot a simplified version
-# We use max_depth=3 here strictly for the visual layout,
-# ensuring it stays clean and readable for the user.
-plot_tree(
-    rf_model.estimators_[0],          # Pulls the first tree out of your 100 trees
-    max_depth=3,                      # Limits visual depth so it doesn't get cluttered
-    feature_names=features,     # Uses your list of 10-12 NBA stat labels
-    class_names=['Role Player', 'All-Star'], # Maps 0 and 1 to clean sports terms
-    filled=True,                      # Colors the boxes (Blue for All-Stars, Orange for Role Players)
-    rounded=True,                     # Rounds the box corners for a cleaner modern UI vibe
-    fontsize=10                       # Adjust font size for scannability
+rf=RandomForestClassifier(
+    n_estimators=200,
+    max_depth=10,
+    random_state=42,
+    class_weight='balanced'
 )
 
-# 4. Save and show the flowchart
-plt.title("Inside an NBA All-Star Decision Tree", fontsize=18, fontweight='bold', pad=20)
+rf.fit(X_train, y_train)
+
+# Create feature importance DataFrame
+feature_importance = pd.DataFrame({
+    'Feature': features,
+    'Importance': rf.feature_importances_
+})
+
+
+# Sort features from highest to lowest importance
+feature_importance = feature_importance.sort_values(
+    by='Importance',
+    ascending=True
+)
+
+
+# Create bar chart
+plt.figure(figsize=(10, 6))
+
+plt.barh(
+    feature_importance['Feature'],
+    feature_importance['Importance']
+)
+
+
+# Add importance values to each bar
+for index, value in enumerate(feature_importance['Importance']):
+    plt.text(
+        value,
+        index,
+        f'{value:.3f}',
+        va='center'
+    )
+
+
+# Chart title
+plt.title(
+    'Random Forest Feature Importance for All-Star Prediction',
+    fontsize=16
+)
+
+
+# Axis labels
+plt.xlabel('Feature Importance')
+
+plt.ylabel('Player Statistic')
+
+
+# Adjust layout
 plt.tight_layout()
-plt.savefig("simplified_nba_decision_tree.png", bbox_inches='tight')
+
+
+# Display chart
 plt.show()
+
+#########################################################################
+
+
+
+# import pandas as pd
+# import matplotlib.pyplot as plt
+# from sklearn.model_selection import train_test_split
+# from sklearn.tree import plot_tree
+# from sklearn.ensemble import RandomForestClassifier
+#
+# nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
+#
+# features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT','GP_PCT',
+#           'MINPG']
+#
+# X=nba_awards_data[features]
+#
+# y=nba_awards_data['All-Star']
+#
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+#                                                     stratify=y, random_state=42)
+#
+# rf_model = RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42)
+# rf_model.fit(X_train, y_train)
+#
+# # 2. Set up a large plot canvas so the text doesn't overlap
+# plt.figure(figsize=(20, 10))
+#
+# # 3. Pull ONE tree out of the forest and plot a simplified version
+# # We use max_depth=3 here strictly for the visual layout,
+# # ensuring it stays clean and readable for the user.
+# plot_tree(
+#     rf_model.estimators_[0],          # Pulls the first tree out of your 100 trees
+#     max_depth=3,                      # Limits visual depth so it doesn't get cluttered
+#     feature_names=features,     # Uses your list of 10-12 NBA stat labels
+#     class_names=['Role Player', 'All-Star'], # Maps 0 and 1 to clean sports terms
+#     filled=True,                      # Colors the boxes (Blue for All-Stars, Orange for Role Players)
+#     rounded=True,                     # Rounds the box corners for a cleaner modern UI vibe
+#     fontsize=10                       # Adjust font size for scannability
+# )
+#
+# # 4. Save and show the flowchart
+# plt.title("Inside an NBA All-Star Decision Tree", fontsize=18, fontweight='bold', pad=20)
+# plt.tight_layout()
+# plt.savefig("simplified_nba_decision_tree.png", bbox_inches='tight')
+# plt.show()

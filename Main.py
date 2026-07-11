@@ -5,7 +5,8 @@ from sklearn.ensemble import IsolationForest
 
 nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
 
-features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT','GP_PCT']
+features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT','GP_PCT',
+          'MINPG']
 
 X=nba_awards_data[features]
 
@@ -109,6 +110,8 @@ class Main:
         player_gp_pct = get_numerical_value("What is this player's games played percentage in "
                                             "decimal form?", 1)
 
+        player_minpg = get_numerical_value("What is this player's minutes per game?", 48)
+
         new_player_stats = pd.DataFrame({
             'FG_PCT': [player_fg_pct],
             'PPG': [player_ppg],
@@ -120,21 +123,23 @@ class Main:
             'FG3MPG': [player_fg3_mpg],
             'FTMPG': [player_ft_mpg],
             'WIN_PCT': [player_win_pct],
-            'GP_PCT': [player_gp_pct]
+            'GP_PCT': [player_gp_pct],
+            'MINPG': [player_minpg]
         })
 
         player_stats_table_string=f"""
-            'FG_PCT': {player_fg_pct*100},
-            'PPG': {player_ppg},
-            'RPG': {player_rpg},
-            'APG': {player_apg},
-            'SPG': {player_spg},
-            'BPG': {player_bpg},
-            'TPG': {player_tpg},
-            'FG3MPG': {player_fg3_mpg},
-            'FTMPG': {player_ft_mpg},
-            'WIN_PCT': {player_win_pct*100},
-            'GP_PCT': {player_gp_pct*100}"""
+            FG_PCT:{round((player_fg_pct*100),1)}%,
+            PPG: {player_ppg},
+            RPG: {player_rpg},
+            APG: {player_apg},
+            SPG: {player_spg},
+            BPG: {player_bpg},
+            TPG: {player_tpg},
+            FG3MPG: {player_fg3_mpg},
+            FTMPG: {player_ft_mpg},
+            WIN_PCT: {round((player_win_pct*100),1)}%,
+            GP_PCT: {round((player_gp_pct*100),1)}%,
+            MINPG: {player_minpg},"""
 
         prediction=rf.predict(new_player_stats)
 
