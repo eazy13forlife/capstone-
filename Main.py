@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import IsolationForest
+from sklearn.metrics import classification_report
 
 nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
 
@@ -12,8 +13,22 @@ X=nba_awards_data[features]
 
 y=nba_awards_data['All-Star']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
-                                                    stratify=y, random_state=42)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+#                                                     stratify=y, random_state=42)<--add back
+
+
+# 1. Define your modern "holdout" test seasons as a list of strings
+test_seasons = ['2022-23', '2023-24']
+
+# 2. Create a True/False mask for rows that match those test seasons
+is_test_season = nba_awards_data['SEASON'].isin(test_seasons)
+
+# 3. Separate your Features (X) and Targets (y)
+X_train = X[~is_test_season]  # The '~' means NOT in test seasons (all past data)
+y_train = y[~is_test_season]
+
+X_test = X[is_test_season]    # Just the modern test seasons
+y_test = y[is_test_season]
 
 rf=RandomForestClassifier(
     n_estimators=200,
@@ -23,6 +38,20 @@ rf=RandomForestClassifier(
 )
 
 rf.fit(X_train, y_train)
+
+# 1. Generate predictions on your unseen test seasons
+# y_pred = rf.predict(X_test) <--add this back
+
+# 1. Get the raw percentage of trees voting for All-Star (instead of just 1 or 0)
+# This gives you an array of probabilities for each player
+probabilities = rf.predict_proba(X_test)[:, 1]
+
+# 2. Set a stricter threshold. A player must clear 70% confidence to be a '1'
+strict_threshold = 0.70
+y_pred_strict = (probabilities >= strict_threshold).astype(int)
+
+# 3. Print your new classification report to see your precision jump up!
+print(classification_report(y_test, y_pred_strict, target_names=['Not All-Star', 'All-Star']))
 
 # for detecting unusual combinations
 outlier_model = IsolationForest(
@@ -161,7 +190,9 @@ class Main:
 
         message=""
 
-        if prediction[0]==0:
+        # if all-star percentage is less than strict threshold of making all star then they  are not all star. so begin with
+        # stating they are not all star first
+        if all_star_percent< strict_threshold:
             message = (f"With these numbers for the season, the model estimates a"
                        f" {not_all_star_percent}% probability that {player_name} does not belong"
                        f" in the All-Star category and a {all_star_percent}% probability that "
