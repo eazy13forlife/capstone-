@@ -3,8 +3,64 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import classification_report
+# code to clean the data
 
-nba_awards_data=pd.read_csv('CSV/seasonal_stats_with_awards_filtered.csv');
+def prep_and_engineer_data(file_path):
+    # 1. Load your raw dataset into the parent DataFrame (df)
+    print("Loading raw NBA dataset...")
+    df = pd.read_csv(file_path)
+    initial_rows = len(df)
+
+    df = df[df['MATCH_TYPE'] == 'Regular'].copy()
+    print(f"Isolated regular season. Removed {initial_rows - len(df)} non-regular records.")
+
+
+    # 2. Filter: Remove players who didn't play a single game (GP == 0 or missing)
+    df = df[df['GP'] > 0].copy()
+    print(f"Removed {initial_rows - len(df)} records where players played 0 games.")
+
+    # 3. Filter: Keep only modern era (2000-01 onward) and remove incomplete 2025 data
+    # This addresses the massive historical shift where league-wide 3-point volume
+    # spiked from ~16 attempts in 1995-96 to over 35 attempts per game by 2024.
+    df = df[df['SEASON'] != '2024-25'].copy()  # Exclude incomplete 2025 season
+
+    # Extract the starting year from the 'SEASON' string format (e.g., '2000-01' -> 2000)
+    df['START_YEAR'] = df['SEASON'].apply(lambda x: int(str(x).split('-')[0]))
+    df = df[df['START_YEAR'] >= 2000].copy()
+    print(f"Isolated modern era (2000-2024). Remaining records: {len(df)}")
+
+    # 4. Feature Engineering: Execute mathematical columns rounded to 1 decimal place
+    print("Creating custom features relevant to All-Star selection...")
+
+    # Per-Game Division Ops (Dividing raw volume stats by Games Played)
+    df['PPG'] = (df['PTS'] / df['GP']).round(1)
+    df['RPG'] = (df['REB'] / df['GP']).round(1)  # Rebounds per game
+    df['APG'] = (df['AST'] / df['GP']).round(1)
+    df['SPG'] = (df['STL'] / df['GP']).round(1)
+    df['BPG'] = (df['BLK'] / df['GP']).round(1)
+    df['TPG'] = (df['TO'] / df['GP']).round(1)  # Turnovers per game
+    df['FG3APG'] = (df['FG3A'] / df['GP']).round(1)  # 3-Pointers Attempted per game
+    df['FG3MPG'] = (df['FG3M'] / df['GP']).round(1)  # 3-Pointers Made per game
+    df['FTMPG'] = (df['FTM'] / df['GP']).round(1)  # Free Throws Made per game
+    df['FTAPG'] = (df['FTA'] / df['GP']).round(1)  # Free Throws Attempted per game
+    df['MINPG'] = (df['MIN'] / df['GP']).round(1)  # Minutes per game
+
+    # Season-Context Ops (Dividing metrics by standard 82-game season schedule)
+    # Kept as raw floats to maintain precise efficiency rates for the Random Forest
+    df['WIN_PCT'] = (df['W'] / 82).round(3)  # Team Win Percentage context
+    df['GP_PCT'] = (df['GP'] / 82).round(3)  # Player availability rate
+
+    # Drop temporary operational column to freeze data schema rigidity
+    df = df.drop(columns=['START_YEAR'])
+
+    print("Feature engineering complete.")
+
+    df.to_csv('nba_table_preview.csv', index=False)
+    return df
+
+
+nba_awards_data=prep_and_engineer_data('CSV/seasonal_stats_with_awards.csv');
+
 
 features=['FG_PCT','PPG','RPG','APG','SPG','BPG','TPG','FG3MPG','FTMPG','WIN_PCT','GP_PCT',
           'MINPG']
