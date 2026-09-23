@@ -5,6 +5,7 @@ from sklearn.ensemble import IsolationForest
 from sklearn.metrics import classification_report
 # code to clean the data
 
+# Function that cleans raw dataset
 def prep_and_engineer_data(file_path):
     # 1. Load your raw dataset into the parent DataFrame (df)
     print("Loading raw NBA dataset...")
@@ -56,6 +57,7 @@ def prep_and_engineer_data(file_path):
     print("Feature engineering complete.")
 
     df.to_csv('nba_table_preview.csv', index=False)
+
     return df
 
 
