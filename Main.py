@@ -54,7 +54,10 @@ def prep_and_engineer_data(file_path):
     # Drop temporary operational column to freeze data schema rigidity
     df = df.drop(columns=['START_YEAR'])
 
-    print("Feature engineering complete.")
+    print("Feature engineering complete and full version is available as "
+          "nba_table_preview.csv")
+
+    print(df)
 
     df.to_csv('nba_table_preview.csv', index=False)
 
@@ -102,7 +105,9 @@ strict_threshold = 0.70
 y_pred_strict = (probabilities >= strict_threshold).astype(int)
 
 # 3. Print your new classification report to see your precision jump up!
-# print(classification_report(y_test, y_pred_strict, target_names=['Not All-Star', 'All-Star']))
+print("\n")
+print("Evaluating success of the model")
+print(classification_report(y_test, y_pred_strict, target_names=['Not All-Star', 'All-Star']))
 
 # for detecting unusual combinations
 outlier_model = IsolationForest(
