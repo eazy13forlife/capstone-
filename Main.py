@@ -13,10 +13,6 @@ X=nba_awards_data[features]
 
 y=nba_awards_data['All-Star']
 
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
-#                                                     stratify=y, random_state=42)<--add back
-
-
 # 1. Define your modern "holdout" test seasons as a list of strings
 test_seasons = ['2022-23', '2023-24']
 
