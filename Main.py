@@ -39,9 +39,6 @@ rf=RandomForestClassifier(
 
 rf.fit(X_train, y_train)
 
-# 1. Generate predictions on your unseen test seasons
-# y_pred = rf.predict(X_test) <--add this back
-
 # 1. Get the raw percentage of trees voting for All-Star (instead of just 1 or 0)
 # This gives you an array of probabilities for each player
 probabilities = rf.predict_proba(X_test)[:, 1]
@@ -51,7 +48,7 @@ strict_threshold = 0.70
 y_pred_strict = (probabilities >= strict_threshold).astype(int)
 
 # 3. Print your new classification report to see your precision jump up!
-print(classification_report(y_test, y_pred_strict, target_names=['Not All-Star', 'All-Star']))
+# print(classification_report(y_test, y_pred_strict, target_names=['Not All-Star', 'All-Star']))
 
 # for detecting unusual combinations
 outlier_model = IsolationForest(
